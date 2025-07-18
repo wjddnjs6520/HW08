@@ -17,7 +17,11 @@ ASpartaPlayerController::ASpartaPlayerController()
     HUDWidgetClass(nullptr),
     HUDWidgetInstance(nullptr),
     MainMenuWidgetClass(nullptr),
-    MainMenuWidgetInstance(nullptr)
+    MainMenuWidgetInstance(nullptr),
+    IceWidgetClass(nullptr),
+    IceWidgetInstance(nullptr),
+    BlackWidgetClass(nullptr),
+    BlackWidgetInstance(nullptr)
 {
 
 }
@@ -181,10 +185,64 @@ void ASpartaPlayerController::StartGame()
 {
     if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(UGameplayStatics::GetGameInstance(this)))
     {
-        SpartaGameInstance->CurrentLevelIndex = 0;
+        SpartaGameInstance->CurrentWaveIndex = 0;
         SpartaGameInstance->TotalScore = 0;
     }
 
     UGameplayStatics::OpenLevel(GetWorld(), FName("BasicLevel"));
     SetPause(false);
+}
+
+void ASpartaPlayerController::ShowIceUI()
+{
+    if (ULocalPlayer* LocalPlayer = GetLocalPlayer()) 
+    {
+        if (IceWidgetClass && !IceWidgetInstance)
+        {
+            IceWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), IceWidgetClass);
+            if (IceWidgetInstance)
+            {
+                IceWidgetInstance->AddToViewport(-1);
+
+                // 자동 제거 (3초 후)
+                FTimerHandle IceUITimer;
+                GetWorld()->GetTimerManager().SetTimer(IceUITimer, [this]()
+                    {
+                        if (IceWidgetInstance)
+                        {
+                            IceWidgetInstance->RemoveFromParent();
+                            IceWidgetInstance = nullptr;
+                        }
+                    }, 3.f, false);
+            }
+        }
+    }
+}
+
+void ASpartaPlayerController::ShowBlackUI()
+{
+    if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
+    {
+        if (BlackWidgetClass && !BlackWidgetInstance)
+        {
+            UWorld* World = GetWorld();
+            if (!World) return;
+
+            BlackWidgetInstance = CreateWidget<UUserWidget>(World, BlackWidgetClass);
+            if (BlackWidgetInstance)
+            {
+                BlackWidgetInstance->AddToViewport(-1);
+
+                // 자동 제거 (3초 후)
+                World->GetTimerManager().SetTimer(BlackUITimer, [this]()
+                    {
+                        if (BlackWidgetInstance)
+                        {
+                            BlackWidgetInstance->RemoveFromParent();
+                            BlackWidgetInstance = nullptr;
+                        }
+                    }, 3.f, false);
+            }
+        }
+    }
 }

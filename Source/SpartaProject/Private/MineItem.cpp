@@ -10,7 +10,7 @@
 // Sets default values
 AMineItem::AMineItem()
 {
-	ExplosionDelay = 5.0f;
+	ExplosionDelay = 2.0f;
 	ExplosionRadius = 300.0f;
 	ExplosionDamage = 30.0f;
 	ItemType = "Mine";
@@ -70,7 +70,7 @@ void AMineItem::Explode()
 	TArray<AActor*> OverlappingActors;
 	//현재 폭발 반경 내 오버랩된 모든 액터를 Array에 불러옴
 	ExplosionCollision->GetOverlappingActors(OverlappingActors);
-
+	UE_LOG(LogTemp, Warning, TEXT("오버랩된 액터 수: %d"), OverlappingActors.Num());
 	//Array 내부 원소 탐색
 	for (AActor* Actor : OverlappingActors)
 	{

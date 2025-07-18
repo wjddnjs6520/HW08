@@ -3,7 +3,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
+#include "GameplayTagContainer.h"
 #include "SpartaCharacter.generated.h"
+
 
 //카메라, 스프링암 관련 전방선언
 class USpringArmComponent;
@@ -38,10 +40,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void AddHealth(float Amount);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+	FGameplayTagContainer CurrentStateTags;
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void ShowIceEffectUI();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void ShowBlackEffectUI();
+
+	UFUNCTION(BlueprintCallable, Category = "Mine")
+	void SetNormalSpeed(float value);
+	UFUNCTION(BlueprintCallable, Category = "Mine")
+	void ResetSpeed();
 
 protected:
 
 	// 이동 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float OriginalSpeed; // 기본 걷기 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float NormalSpeed; // 기본 걷기 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")

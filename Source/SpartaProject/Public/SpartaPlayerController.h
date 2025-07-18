@@ -2,11 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Blueprint/UserWidget.h"
 #include "SpartaPlayerController.generated.h"
 
 class UInputMappingContext; // IMC 전방 선언
 class UInputAction; // IA 전방 선언
-
 
 
 UCLASS()
@@ -45,6 +45,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Menu")
 	UUserWidget* MainMenuWidgetInstance;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ice")
+	TSubclassOf<UUserWidget> IceWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ice")
+	UUserWidget* IceWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Black")
+	TSubclassOf<UUserWidget> BlackWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Black")
+	UUserWidget* BlackWidgetInstance;
+
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	UUserWidget* GetHUDWidget() const;
 
@@ -57,6 +68,14 @@ public:
 	// 게임 시작
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void StartGame();
+
+	UFUNCTION(BlueprintCallable, Category = "Ice")
+	void ShowIceUI();
+
+	UFUNCTION(BlueprintCallable, Category = "Black")
+	void ShowBlackUI();
+
+	FTimerHandle BlackUITimer;
 
 protected:
 	virtual void BeginPlay() override;

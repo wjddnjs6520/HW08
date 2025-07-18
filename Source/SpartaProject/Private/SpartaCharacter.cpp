@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
+#include "Hw08GameplayTags.h"
 #include "SpartaGameState.h"
 
 // Sets default values
@@ -39,6 +40,7 @@ ASpartaCharacter::ASpartaCharacter()
     NormalSpeed = 600.0f;
     SprintSpeedMultiplier = 1.5f;
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
+    OriginalSpeed = NormalSpeed;
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 
@@ -65,6 +67,41 @@ void ASpartaCharacter::AddHealth(float Amount)
     UpdateOverheadHP();
     UE_LOG(LogTemp, Log, TEXT("Health increased to : %f"), Health);
 }
+
+void ASpartaCharacter::ShowIceEffectUI()
+{
+    if (ASpartaPlayerController* PC = Cast<ASpartaPlayerController>(GetController())) 
+    {
+        PC->ShowIceUI();
+    }
+}
+
+void ASpartaCharacter::ShowBlackEffectUI()
+{
+    if (ASpartaPlayerController* PC = Cast<ASpartaPlayerController>(GetController()))
+    {
+        
+        PC->ShowBlackUI();
+    }
+}
+
+void ASpartaCharacter::SetNormalSpeed(float value)
+{
+    if (NormalSpeed > 300.f)
+    {
+        NormalSpeed *= value;
+    }
+    GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+    SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
+}
+
+void ASpartaCharacter::ResetSpeed()
+{
+    NormalSpeed = OriginalSpeed;
+    GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+    SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
+}
+
 
 
 void ASpartaCharacter::OnDeath()
@@ -149,7 +186,7 @@ void ASpartaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ASpartaCharacter::Move(const FInputActionValue& value)
 {
-    if (!Controller) return;
+    if (!Controller || CurrentStateTags.HasTag(TAG_State_Frozen)) return;
 
     const FVector2D MoveInput = value.Get<FVector2D>();
 
@@ -166,6 +203,7 @@ void ASpartaCharacter::Move(const FInputActionValue& value)
 
 void ASpartaCharacter::StartJump(const FInputActionValue& value)
 {
+    if (CurrentStateTags.HasTag(TAG_State_Frozen)) return;
     if (value.Get<bool>()) {
         Jump();
     }
@@ -173,6 +211,7 @@ void ASpartaCharacter::StartJump(const FInputActionValue& value)
 
 void ASpartaCharacter::StopJump(const FInputActionValue& value)
 {
+    if (CurrentStateTags.HasTag(TAG_State_Frozen)) return;
     if (!value.Get<bool>()) {
         StopJumping();
     }
@@ -180,6 +219,7 @@ void ASpartaCharacter::StopJump(const FInputActionValue& value)
 
 void ASpartaCharacter::Look(const FInputActionValue& value)
 {
+    if (CurrentStateTags.HasTag(TAG_State_Frozen)) return;
     FVector2D LookInput = value.Get<FVector2D>();
 
     AddControllerYawInput(LookInput.X);

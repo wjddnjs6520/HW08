@@ -2,13 +2,15 @@
 
 
 #include "CoinItem.h"
-#include "SpartaGameState.h"
+#include "Components/SphereComponent.h"
+#include "WaveGameState.h"
 // Sets default values
 ACoinItem::ACoinItem()
 {
     // 점수 기본값을 0으로 설정
     PointValue = 0;
     ItemType = "DefaultCoin";
+    Collision->SetGenerateOverlapEvents(true);
 }
 
 void ACoinItem::ActivateItem(AActor* Activator)
@@ -19,7 +21,7 @@ void ACoinItem::ActivateItem(AActor* Activator)
     {
         if (UWorld* World = GetWorld())
         {
-            if (ASpartaGameState* GameState = World->GetGameState<ASpartaGameState>())
+            if (AWaveGameState* GameState = World->GetGameState<AWaveGameState>())
             {
                 GameState->AddScore(PointValue);
                 GameState->OnCoinCollected();
