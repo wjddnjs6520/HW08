@@ -25,7 +25,6 @@ void ASpartaGameState::BeginPlay()
 {
     Super::BeginPlay();
     UpdateHUD();
-    StartLevel();
 
     GetWorldTimerManager().SetTimer(
         HUDUpdateTimerHandle,
@@ -165,7 +164,7 @@ void ASpartaGameState::OnGameOver()
         if (ASpartaPlayerController* SpartaPlayerController = Cast<ASpartaPlayerController>(PlayerController))
         {
             SpartaPlayerController->SetPause(true);
-            SpartaPlayerController->ShowMainMenu(true);
+            SpartaPlayerController->ShowMainMenu(true, true);
         }
     }
 }

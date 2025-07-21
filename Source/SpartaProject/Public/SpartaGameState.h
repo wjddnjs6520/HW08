@@ -53,8 +53,8 @@ public:
 
     void OnLevleTimeUP();
     void OnCoinCollected();
+
     void EndLevel();
-    
     void StartLevel();
 
     void UpdateHUD();

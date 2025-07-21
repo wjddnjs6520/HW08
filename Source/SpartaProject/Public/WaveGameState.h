@@ -29,7 +29,7 @@ public:
     // 전역 점수를 저장하는 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Coin")
     int32 CollectedCoinCount;
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
     float WaveDuration;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
     int32 CurrentWaveIndex;
@@ -56,7 +56,7 @@ public:
     void OnLevleTimeUP();
     void OnCoinCollected();
     void EndWave();
-
+    UFUNCTION(BlueprintCallable, Category = "Wave")
     void StartWave();
 
     void UpdateHUD();

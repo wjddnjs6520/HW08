@@ -64,7 +64,7 @@ public:
 	void ShowGameHUD();
 	// 메인 메뉴 표시
 	UFUNCTION(BlueprintCallable, Category = "Menu")
-	void ShowMainMenu(bool bIsRestart);
+	void ShowMainMenu(bool bIsRestart, bool bPlayAnim);
 	// 게임 시작
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void StartGame();
@@ -74,6 +74,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Black")
 	void ShowBlackUI();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayWaveComentAnim();
+
 
 	FTimerHandle BlackUITimer;
 

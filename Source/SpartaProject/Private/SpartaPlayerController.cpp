@@ -1,7 +1,7 @@
 ﻿#include "SpartaPlayerController.h"
 #include "EnhancedInputSubsystems.h" // Local Player Subsystem 사용
 #include "Blueprint/UserWidget.h" // 헤더 추가
-#include "SpartaGameState.h"
+#include "WaveGameState.h"
 #include "SpartaGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
@@ -47,7 +47,7 @@ void ASpartaPlayerController::BeginPlay()
 
     FString CurrentMapName = GetWorld()->GetMapName();
     if (CurrentMapName.Contains("MenuLevel")) {
-        ShowMainMenu(false);
+        ShowMainMenu(false, false);
     }
 }
 
@@ -56,7 +56,7 @@ UUserWidget* ASpartaPlayerController::GetHUDWidget() const
     return HUDWidgetInstance;
 }
 
-void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
+void ASpartaPlayerController::ShowMainMenu(bool bIsRestart, bool bPlayAnim)
 {
     if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
     {
@@ -95,6 +95,8 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
         UWidget* StartButtonWidget = MainMenuWidgetInstance->GetWidgetFromName(TEXT("StartButton"));
         UWidget* RestartButtonWidget = MainMenuWidgetInstance->GetWidgetFromName(TEXT("RestartButton"));
         UWidget* MainCloseButtonWidget = MainMenuWidgetInstance->GetWidgetFromName(TEXT("MainCloseButton"));
+        UWidget* ExitButtonWidget = MainMenuWidgetInstance->GetWidgetFromName(TEXT("ExitButton"));
+
         if (StartButtonWidget && RestartButtonWidget && MainCloseButtonWidget)
         {
             if (bIsRestart)
@@ -102,14 +104,21 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
                 StartButtonWidget->SetVisibility(ESlateVisibility::Hidden);
                 RestartButtonWidget->SetVisibility(ESlateVisibility::Visible);
                 MainCloseButtonWidget->SetVisibility(ESlateVisibility::Visible);
-                UFunction* PlayAnimFunc = MainMenuWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
-                if (PlayAnimFunc)
+                ExitButtonWidget->SetVisibility(ESlateVisibility::Hidden);
+                if(bPlayAnim)
                 {
-                    MainMenuWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
+                    UFunction* PlayAnimFunc = MainMenuWidgetInstance->FindFunction(FName("PlayGameOverAnim"));
+                    if (PlayAnimFunc)
+                    {
+                        MainMenuWidgetInstance->ProcessEvent(PlayAnimFunc, nullptr);
+                    }
+                    MainCloseButtonWidget->SetVisibility(ESlateVisibility::Hidden);
                 }
+                
 
                 if (UTextBlock* TotalScoreText = Cast<UTextBlock>(MainMenuWidgetInstance->GetWidgetFromName("TotalScoreText")))
                 {
+                    TotalScoreText->SetVisibility(ESlateVisibility::Visible);
                     if (USpartaGameInstance* SpartaGameInstance = Cast<USpartaGameInstance>(UGameplayStatics::GetGameInstance(this)))
                     {
                         TotalScoreText->SetText(FText::FromString(
@@ -124,6 +133,7 @@ void ASpartaPlayerController::ShowMainMenu(bool bIsRestart)
                 StartButtonWidget->SetVisibility(ESlateVisibility::Visible);
                 RestartButtonWidget->SetVisibility(ESlateVisibility::Hidden);
                 MainCloseButtonWidget->SetVisibility(ESlateVisibility::Hidden);
+                ExitButtonWidget->SetVisibility(ESlateVisibility::Visible);
             }
         }
 
@@ -170,11 +180,11 @@ void ASpartaPlayerController::ShowGameHUD()
             bShowMouseCursor = false;
             SetInputMode(FInputModeGameOnly());
 
-            ASpartaGameState* SpartaGameState = GetWorld() ? GetWorld()->GetGameState<ASpartaGameState>() : nullptr;
+            AWaveGameState* WaveGameState = GetWorld() ? GetWorld()->GetGameState<AWaveGameState>() : nullptr;
 
-            if (SpartaGameState)
+            if (WaveGameState)
             {
-                SpartaGameState->UpdateHUD();
+                WaveGameState->UpdateHUD();
             }
         }
     }
@@ -243,6 +253,18 @@ void ASpartaPlayerController::ShowBlackUI()
                         }
                     }, 3.f, false);
             }
+        }
+    }
+}
+
+void ASpartaPlayerController::PlayWaveComentAnim()
+{
+    if (HUDWidgetInstance)
+    {
+        UFunction* Func = HUDWidgetInstance->FindFunction(TEXT("PlayComentAnim"));
+        if (Func)
+        {
+            HUDWidgetInstance->ProcessEvent(Func, nullptr);
         }
     }
 }

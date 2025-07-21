@@ -16,4 +16,5 @@ class SPARTAPROJECT_API ASpartaGameMode : public AGameModeBase
 
 public:
 	ASpartaGameMode();
+
 };

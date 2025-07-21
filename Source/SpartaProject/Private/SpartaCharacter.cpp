@@ -4,9 +4,9 @@
 // 카메라, 스프링 암 함수가 필요한 경우라 include 추가
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/ProgressBar.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Components/TextBlock.h"
 #include "Hw08GameplayTags.h"
 #include "SpartaGameState.h"
 
@@ -119,9 +119,9 @@ void ASpartaCharacter::UpdateOverheadHP()
     UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
     if (!OverheadWidgetInstance) return;
 
-    if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("OverHeadHP"))))
+    if (UProgressBar* HPBar = Cast<UProgressBar>(OverheadWidgetInstance->GetWidgetFromName(TEXT("OverHeadHP"))))
     {
-        HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
+        HPBar->SetPercent(Health / MaxHealth);
     }
 }
 
@@ -253,7 +253,7 @@ void ASpartaCharacter::StartMenu(const FInputActionValue& value)
         if (ASpartaPlayerController* SpartaPlayerController = Cast<ASpartaPlayerController>(PlayerController))
         {
             
-            SpartaPlayerController->ShowMainMenu(true);
+            SpartaPlayerController->ShowMainMenu(true, false);
         }
     }
 }
