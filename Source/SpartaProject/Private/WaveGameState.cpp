@@ -18,7 +18,7 @@ AWaveGameState::AWaveGameState()
     Score = 0;
     SpawnedCoinCount = 0;
     CollectedCoinCount = 0;
-    WaveDuration = 10.0f;
+    WaveDuration = 30.0f;
     CurrentWaveIndex = 0;
     MaxWave = 3;
 
