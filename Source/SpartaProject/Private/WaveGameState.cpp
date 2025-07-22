@@ -97,7 +97,7 @@ void AWaveGameState::StartWave()
 
     SpawnedCoinCount = 0;
     CollectedCoinCount = 0;
-    const int ItemToSpawn = 40;
+    const int ItemToSpawn = 40 * (1 + ((CurrentWaveIndex+1) * 0.3));
     TArray<AActor*> FoundVolumes;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnVolume::StaticClass(), FoundVolumes);
 

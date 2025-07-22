@@ -23,9 +23,9 @@ void ASlowMine::ActivateItem(AActor* Activator)
 
 		FTimerDelegate EndSlowDelegate;
 		EndSlowDelegate.BindUFunction(this, FName("EndSlow"), Player);
-		GetWorldTimerManager().SetTimer(SlowTimerHandle, EndSlowDelegate, 5.f, false);
+		GetWorldTimerManager().SetTimer(SlowTimerHandle, EndSlowDelegate, 2.f, false);
 
-		GetWorldTimerManager().SetTimer(DeleteTimerHandle, this, &ABaseItem::DestroyItem, 5.1f, false);
+		GetWorldTimerManager().SetTimer(DeleteTimerHandle, this, &ABaseItem::DestroyItem, 2.1f, false);
 	}
 	SetActorHiddenInGame(true);	
 	SetActorEnableCollision(false);
